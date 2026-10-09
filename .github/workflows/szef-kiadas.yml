@@ -1,0 +1,88 @@
+# PromNET Széf — Windows-telepítő automatikus építése (a SignPath Foundation ingyenes kódaláírásához is ez kell:
+# az aláírt fájlnak közvetlenül a tárolóban lévő forrásból, automatikusan kell készülnie).
+#   - címke (szef-v*) feltöltésekor: építés + GitHub-kiadás
+#   - kézi indítás: csak építés, a telepítő letölthető műtermékként
+name: PromNET Széf kiadás
+
+on:
+  push:
+    tags: ['szef-v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  RESTIC_VERSION: '0.19.1'
+
+jobs:
+  program:
+    name: Windows-program (Linuxon fordítva)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm i -g pnpm@9
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq gcc-mingw-w64-x86-64
+      - name: Verzió
+        id: ver
+        run: |
+          if [[ "$GITHUB_REF" == refs/tags/szef-v* ]]; then echo "v=${GITHUB_REF#refs/tags/szef-v}" >> "$GITHUB_OUTPUT"; else echo "v=0.0.0-proba-${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"; fi
+      - name: Felület (Windows-változat)
+        run: |
+          pnpm --prefix webui install --frozen-lockfile
+          GOOS=windows BACKREST_BUILD_VERSION=${{ steps.ver.outputs.v }} go generate ./webui/...
+      - name: promnet-szef.exe
+        run: |
+          CC=x86_64-w64-mingw32-gcc CGO_ENABLED=1 GOOS=windows GOARCH=amd64 \
+            go build -tags tray -ldflags "-s -w -X main.version=${{ steps.ver.outputs.v }} -H windowsgui" -o csomag/promnet-szef.exe ./cmd/backrest
+      - name: restic.exe (ellenőrzött letöltés)
+        run: |
+          cd csomag
+          curl -fsSL -o r.zip https://github.com/restic/restic/releases/download/v${RESTIC_VERSION}/restic_${RESTIC_VERSION}_windows_amd64.zip
+          curl -fsSL https://github.com/restic/restic/releases/download/v${RESTIC_VERSION}/SHA256SUMS | grep " restic_${RESTIC_VERSION}_windows_amd64.zip" | sed "s| restic_${RESTIC_VERSION}_windows_amd64.zip| r.zip|" | sha256sum -c -
+          unzip -q r.zip && mv restic_${RESTIC_VERSION}_windows_amd64.exe restic.exe && rm r.zip
+      - run: cp LICENSE build/windows/szef.iss build/windows/szef-beallitas.ps1 build/windows/icon.ico csomag/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: csomag
+          path: csomag/
+    outputs:
+      v: ${{ steps.ver.outputs.v }}
+
+  telepito:
+    name: Telepítő (Inno Setup)
+    needs: program
+    runs-on: windows-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: csomag
+          path: csomag
+      - name: Inno Setup
+        run: choco install innosetup --version=6.7.3 -y --no-progress
+      - name: Fordítás
+        run: |
+          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" /Q /DSzefVer=${{ needs.program.outputs.v }} csomag\szef.iss
+          Get-FileHash csomag\Output\PromNET-Szef-telepito.exe
+      # TODO(SignPath): ha a SignPath Foundation jóváhagyta a projektet, itt jön az aláírás:
+      #   - uses: signpath/github-action-submit-signing-request@v1
+      #     with: { api-token: ${{ secrets.SIGNPATH_API_TOKEN }}, organization-id: …, project-slug: promnet-szef,
+      #             signing-policy-slug: release-signing, github-artifact-id: …, wait-for-completion: true, output-artifact-directory: alairt }
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PromNET-Szef-telepito
+          path: csomag/Output/PromNET-Szef-telepito.exe
+      - name: GitHub-kiadás (csak címkénél)
+        if: startsWith(github.ref, 'refs/tags/szef-v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cd csomag\Output
+          (Get-FileHash PromNET-Szef-telepito.exe).Hash.ToLower() + "  PromNET-Szef-telepito.exe" | Out-File -Encoding ascii PromNET-Szef-telepito.exe.sha256
+          gh release create $env:GITHUB_REF_NAME --repo $env:GITHUB_REPOSITORY --title "PromNET Széf ${{ needs.program.outputs.v }}" --notes "PromNET Széf — titkosított napi gépmentés (https://promnet.hu/szef). A Backrest (GPL-3.0) módosított változata, restic ${{ env.RESTIC_VERSION }} mentőmotorral." --latest PromNET-Szef-telepito.exe PromNET-Szef-telepito.exe.sha256
