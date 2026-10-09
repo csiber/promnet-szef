@@ -21,12 +21,12 @@ func startTray() {
 }
 
 func onReady(status *trayStatus) {
-	systray.SetTooltip("Backrest")
+	systray.SetTooltip("PromNET Széf")
 	systray.SetIcon(icon)
 
-	mOpenUI := systray.AddMenuItem("Open WebUI", "Open the Backrest WebUI in your default browser")
-	mOpenLog := systray.AddMenuItem("Open Log Dir", "Open the Backrest log directory")
-	mQuit := systray.AddMenuItem("Quit", "Kills the backrest process and exits the tray app")
+	mOpenUI := systray.AddMenuItem("PromNET Széf megnyitása", "A mentések áttekintése a böngészőben")
+	mOpenLog := systray.AddMenuItem("Naplók mappája", "A PromNET Széf naplófájljai (hibakereséshez)")
+	mQuit := systray.AddMenuItem("Kilépés", "Leállítja a PromNET Széfet; amíg nem fut, nem ment")
 
 	// The tray is live, so icon writes now take effect: start reflecting status.
 	go status.run()

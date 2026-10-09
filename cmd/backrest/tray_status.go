@@ -100,23 +100,31 @@ func computeStatus(log *oplog.OpLog) (trayState, string) {
 	})
 
 	if last == nil {
-		return stateIdle, "Backrest — no backups yet"
+		return stateIdle, "PromNET Széf — még nem volt mentés"
 	}
 	when := relativeTime(last.GetUnixTimeEndMs())
 	switch last.GetStatus() {
 	case v1.OperationStatus_STATUS_INPROGRESS:
-		return stateRunning, "Backrest — backup in progress…"
+		return stateRunning, "PromNET Széf — mentés folyamatban…"
 	case v1.OperationStatus_STATUS_SUCCESS:
-		return stateOK, "Backrest — last backup succeeded " + when
+		return stateOK, "PromNET Széf — az utolsó mentés sikeres" + paren(when)
 	case v1.OperationStatus_STATUS_WARNING:
-		return stateWarning, "Backrest — last backup finished with warnings " + when
+		return stateWarning, "PromNET Széf — az utolsó mentés figyelmeztetéssel zárult" + paren(when)
 	case v1.OperationStatus_STATUS_ERROR, v1.OperationStatus_STATUS_SYSTEM_CANCELLED:
-		return stateError, "Backrest — last backup failed " + when
+		return stateError, "PromNET Széf — az utolsó mentés NEM sikerült" + paren(when)
 	case v1.OperationStatus_STATUS_USER_CANCELLED:
-		return stateIdle, "Backrest — last backup was cancelled " + when
+		return stateIdle, "PromNET Széf — az utolsó mentés megszakadt" + paren(when)
 	default:
-		return stateIdle, "Backrest — no backups yet"
+		return stateIdle, "PromNET Széf — még nem volt mentés"
 	}
+}
+
+// paren zárójelbe teszi az időt, ha van; üres időnél nem marad „()” a szövegben.
+func paren(when string) string {
+	if when == "" {
+		return ""
+	}
+	return " (" + when + ")"
 }
 
 func relativeTime(unixMs int64) string {
@@ -126,12 +134,12 @@ func relativeTime(unixMs int64) string {
 	d := time.Since(time.UnixMilli(unixMs))
 	switch {
 	case d < time.Minute:
-		return "just now"
+		return "épp most"
 	case d < time.Hour:
-		return fmt.Sprintf("%dm ago", int(d.Minutes()))
+		return fmt.Sprintf("%d perce", int(d.Minutes()))
 	case d < 24*time.Hour:
-		return fmt.Sprintf("%dh ago", int(d.Hours()))
+		return fmt.Sprintf("%d órája", int(d.Hours()))
 	default:
-		return fmt.Sprintf("%dd ago", int(d.Hours()/24))
+		return fmt.Sprintf("%d napja", int(d.Hours()/24))
 	}
 }
