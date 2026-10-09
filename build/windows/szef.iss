@@ -1,17 +1,17 @@
 ﻿; PromNET Széf — Windows-telepítő (Inno Setup 6). Csak a felhasználó saját fiókjába telepít, rendszergazdai jog nélkül.
-; Fordítás:  ISCC.exe /DVer=1.14.1-szef1 szef.iss   (a mappában: promnet-szef.exe, restic.exe, icon.ico, LICENSE, szef-beallitas.ps1)
+; Fordítás:  ISCC.exe /DSzefVer=1.14.1-szef1 szef.iss   (a mappában: promnet-szef.exe, restic.exe, icon.ico, LICENSE, szef-beallitas.ps1)
 ; A Backrest (GPL-3.0, Gareth George) alapján — a módosított forrás: https://github.com/csiber/promnet-szef
 #define N "PromNET Széf"
 #define Exe "promnet-szef.exe"
-#ifndef Ver
-  #define Ver "0.0.0-dev"
+#ifndef SzefVer
+  #define SzefVer "0.0.0-dev"
 #endif
 
 [Setup]
 AppId={{D2C120E0-F0C1-493A-8D2E-EE1DD8B8351C}
 AppName={#N}
-AppVersion={#Ver}
-AppVerName={#N} {#Ver}
+AppVersion={#SzefVer}
+AppVerName={#N} {#SzefVer}
 AppPublisher=Polyák Csaba e.v. (PromNET)
 AppPublisherURL=https://szef.promnet.hu
 AppSupportURL=https://szef.promnet.hu
@@ -83,6 +83,13 @@ begin
   Result := (PageID = AdatOldal.ID) and MarBeallitva;
 end;
 
+// Csendes telepítés (szervizben): PromNET-Szef-telepito.exe /VERYSILENT /AZONOSITO=xyz /JELSZO=...
+// Ha nincs megadva és még nincs beállítás, csak a program kerül fel; a Széfet ilyenkor kézzel kell beállítani.
+function CsendesAdatok(): Boolean;
+begin
+  Result := (ExpandConstant('{param:AZONOSITO|}') <> '') and (ExpandConstant('{param:JELSZO|}') <> '');
+end;
+
 function NextButtonClick(CurPageID: Integer): Boolean;
 var
   Adat, Ps1, Restic, Uzenet: String;
@@ -90,6 +97,12 @@ var
 begin
   Result := True;
   if CurPageID <> AdatOldal.ID then exit;
+  if WizardSilent then
+  begin
+    if MarBeallitva or not CsendesAdatok() then exit;
+    AdatOldal.Values[0] := ExpandConstant('{param:AZONOSITO|}');
+    AdatOldal.Values[1] := ExpandConstant('{param:JELSZO|}');
+  end;
   if (Trim(AdatOldal.Values[0]) = '') or (Trim(AdatOldal.Values[1]) = '') then
   begin
     MsgBox('Add meg a Széf-azonosítót és a Széf-jelszót.', mbError, MB_OK);
@@ -120,6 +133,7 @@ begin
     Uzenet := 'Váratlan hiba történt a beállításnál. A részletek: %TEMP%\promnet-szef-hiba.txt. Hívj, és segítünk: 06 20 549 4107.';
   end;
   MsgBox(Uzenet, mbError, MB_OK);
+  if WizardSilent then Abort;
   Result := False;
 end;
 

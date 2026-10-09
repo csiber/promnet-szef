@@ -1,3 +1,15 @@
+# PromNET Széf
+
+Havidíjas, titkosított gépmentés a PromNET szervizügyfeleinek (szef.promnet.hu). Ez a [Backrest](https://github.com/garethgeorge/backrest) (GPL-3.0, Gareth George) módosított változata: magyar felület, PromNET-arculat, magyar Windows-telepítő előbeállítással.
+
+## Állapot (2026-10-09)
+- Kész: magyar fordítás (webui/messages/hu.json), arculat, magyar tálca és állapotikonok, telepítő (build/windows/szef.iss + szef-beallitas.ps1). Gamer PC-n kipróbálva: hibás adat → „hibás azonosító/jelszó”, sikeres beállítás, ismételt futás, csendes telepítés és eltávolítás.
+- Csendes telepítés a szervizben: `PromNET-Szef-telepito.exe /VERYSILENT /AZONOSITO=<azonosító> /JELSZO=<jelszó>`
+- Fordítás: Windows-exe a CT120-ban (mingw), telepítő a gamer PC-n (C:\SzefBuild, Inno Setup 6.7.3).
+- TODO: beégetett angol szövegek a haladó beállításoknál; kódaláírás; automatikus kiadás.
+
+---
+
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="./webui/assets/logo.svg" width="400px">

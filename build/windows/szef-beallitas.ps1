@@ -32,8 +32,11 @@ $repo = "rest:https://" + [uri]::EscapeDataString($az) + ":" + [uri]::EscapeData
 
 $env:RESTIC_REPOSITORY = $repo
 $env:RESTIC_PASSWORD = $enc
+# A restic a hibát a stderr-re írja; PowerShell 5.1-ben ez „Stop” mellett kivétel lenne, ezért itt Continue.
+$ErrorActionPreference = 'Continue'
 $ki = & $Restic init 2>&1 | Out-String
 $kod = $LASTEXITCODE
+$ErrorActionPreference = 'Stop'
 Remove-Item Env:RESTIC_PASSWORD, Env:RESTIC_REPOSITORY
 if ($kod -ne 0) {
   if ($ki -match '401|Unauthorized') { exit 2 }
