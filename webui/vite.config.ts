@@ -13,7 +13,7 @@ export default defineConfig(({ mode }) => {
       paraglideVitePlugin({
         project: './project.inlang',
         outdir: './src/paraglide',
-        strategy: ['localStorage', 'preferredLanguage', 'baseLocale'],
+        strategy: ['localStorage', 'baseLocale'], // PromNET Széf: alapból magyar, a böngésző nyelvétől függetlenül
       }),
       react(),
       tsconfigPaths(),

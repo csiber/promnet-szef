@@ -1147,6 +1147,7 @@ const Alert = ({ status, children }: any) => (
 );
 
 const languageNames: Record<string, string> = {
+  hu: "Magyar",
   en: "English",
   de: "Deutsch",
   zh: "中文",

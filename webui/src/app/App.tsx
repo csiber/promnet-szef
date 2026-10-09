@@ -886,7 +886,7 @@ export const App: React.FC = () => {
         align="center"
         px={4}
         h="60px"
-        bg="#1b232c" // Maintain original brand color
+        bg="#0a0e14" // PromNET-grafit
         color="white"
         flexShrink={0}
       >
@@ -899,7 +899,8 @@ export const App: React.FC = () => {
 
         <Flex align="baseline" gap={4}>
           <Link
-            href="https://github.com/garethgeorge/backrest"
+            href="https://github.com/csiber/promnet-szef"
+            title="A program forrása (GPL-3, a Backrest alapján)"
             target="_blank"
             color="whiteAlpha.700"
             fontSize="xs"

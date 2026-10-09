@@ -41,7 +41,7 @@ export const GettingStartedGuide = () => {
 
       <Text mb={4}>
         <Link
-          href="https://github.com/garethgeorge/backrest"
+          href="https://szef.promnet.hu"
           target="_blank"
           colorPalette="blue"
         >
@@ -70,7 +70,7 @@ export const GettingStartedGuide = () => {
         <List.Item>
           {m.dashboard_getting_started_overview_d_a()}
           <Link
-            href="https://garethgeorge.github.io/backrest"
+            href="tel:+36205494107"
             target="_blank"
             colorPalette="blue"
           >
