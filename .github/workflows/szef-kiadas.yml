@@ -64,11 +64,15 @@ jobs:
         with:
           name: csomag
           path: csomag
-      - name: Inno Setup
-        run: choco install innosetup --version=6.7.3 -y --no-progress
+      - name: Inno Setup 6.7.3 (hivatalos kiadás, aláírás-ellenőrzéssel)
+        run: |
+          Invoke-WebRequest -UseBasicParsing https://github.com/jrsoftware/issrc/releases/download/is-6_7_3/innosetup-6.7.3.exe -OutFile is.exe
+          $s = Get-AuthenticodeSignature is.exe; "$($s.Status) $($s.SignerCertificate.Subject)"
+          if ($s.Status -ne 'Valid') { throw 'Az Inno Setup aláírása nem érvényes' }
+          Start-Process is.exe -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART','/DIR=C:\inno' -Wait
       - name: Fordítás
         run: |
-          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" /Q /DSzefVer=${{ needs.program.outputs.v }} csomag\szef.iss
+          & "C:\inno\ISCC.exe" /Q /DSzefVer=${{ needs.program.outputs.v }} csomag\szef.iss
           Get-FileHash csomag\Output\PromNET-Szef-telepito.exe
       # TODO(SignPath): ha a SignPath Foundation jóváhagyta a projektet, itt jön az aláírás:
       #   - uses: signpath/github-action-submit-signing-request@v1
