@@ -1,0 +1,30 @@
+[Unit]
+Description=PromNET Szef - restic REST mentoszerver
+After=network-online.target
+[Service]
+User=szef
+Group=szef
+ExecStart=/usr/local/bin/rest-server --path /srv/szef --listen :8000 --htpasswd-file /etc/szef/htpasswd --private-repos
+Restart=always
+NoNewPrivileges=yes
+ProtectSystem=strict
+ReadWritePaths=/srv/szef
+ProtectHome=yes
+PrivateTmp=yes
+[Install]
+WantedBy=multi-user.target
+[Unit]
+Description=PromNET Szef Cloudflare-alagut
+After=network-online.target promnet-szef.service
+[Service]
+ExecStart=/usr/bin/cloudflared --no-autoupdate tunnel run --token-file /etc/cloudflared/token
+Restart=always
+[Install]
+WantedBy=multi-user.target
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+* * * * * root szef-szinkron lista >> /var/log/szef-szinkron.log 2>&1
+23 4 * * * szef szef-szinkron jelentes >> /var/log/szef-jelentes.log 2>&1
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+10 3 * * * root /usr/local/sbin/szef-torles >> /var/log/szef-torles.log 2>&1
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+30 3 * * * root /usr/local/sbin/szef-pillanatkep >> /var/log/szef-pillanatkep.log 2>&1
