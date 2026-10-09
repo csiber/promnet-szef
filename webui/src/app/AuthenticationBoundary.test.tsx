@@ -95,7 +95,7 @@ describe("AuthenticationBoundary", () => {
 
     // Non-transient errors break out of the retry loop immediately.
     expect(
-      await screen.findByText("Failed to load configuration"),
+      await screen.findByText("Nem sikerült betölteni a beállításokat"),
     ).toBeInTheDocument();
     expect(screen.queryByTestId("content")).not.toBeInTheDocument();
     expect(backrestService.getConfig).toHaveBeenCalledTimes(1);

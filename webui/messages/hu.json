@@ -213,7 +213,7 @@
   "app_error_initial_config": "Nem sikerült betölteni a beállításokat. Általában ez azt jelenti, hogy a háttérben futó PromNET Széf nem fut.",
   "login_success": "Bejelentkeztél",
   "login_error": "Nem sikerült a belépés: ",
-  "login_title": "Belépés",
+  "login_title": "Bejelentkezés",
   "login_username_required": "Add meg a felhasználónevet",
   "login_username_placeholder": "Felhasználónév",
   "login_password_required": "Add meg a jelszót",

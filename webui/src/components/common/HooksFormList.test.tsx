@@ -126,7 +126,7 @@ describe("HooksFormList", () => {
     expect(screen.getAllByText(/^Hook \d+:/)).toHaveLength(2);
 
     const removeButtons = screen.getAllByRole("button", {
-      name: "Remove hook",
+      name: "Művelet törlése",
     });
     await user.click(removeButtons[0]);
 
@@ -150,7 +150,7 @@ describe("HooksFormList", () => {
       },
     ]);
 
-    const urlInput = screen.getByPlaceholderText("Discord Webhook URL");
+    const urlInput = screen.getByPlaceholderText("Discord webhook-cím");
     await user.type(urlInput, "https://example.com/hook");
 
     expect(onChange).toHaveBeenLastCalledWith([

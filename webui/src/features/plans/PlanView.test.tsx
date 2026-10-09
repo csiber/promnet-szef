@@ -35,7 +35,7 @@ const plan = config.plans[0];
 const openMenu = async (
   user: ReturnType<typeof renderWithProviders>["user"],
 ) => {
-  const trigger = await screen.findByRole("button", { name: "More actions" });
+  const trigger = await screen.findByRole("button", { name: "További műveletek" });
   await user.click(trigger);
 };
 
