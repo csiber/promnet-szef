@@ -3,7 +3,7 @@
 # 2) generál egy titkosítási jelszót, és létrehozza a tárolót,
 # 3) megírja a beállítást (%APPDATA%\backrest\config.json): Dokumentumok, Asztal, Képek, naponta, 30 nap / 8 hét / 12 hónap,
 # 4) elkészíti a kinyomtatható helyreállítási lapot az Asztalra.
-# Kilépési kódok: 0 kész, 2 hibás azonosító/jelszó, 3 ehhez a Széfhez már van mentés, 4 nincs kapcsolat, 5 már be van állítva, 1 egyéb hiba.
+# Kilépési kódok: 0 kész, 2 hibás azonosító/jelszó, 3 erről a gépről (ugyanezzel a gépnévvel) már van mentés, 4 nincs kapcsolat, 5 már be van állítva, 1 egyéb hiba.
 param(
   [Parameter(Mandatory = $true)][string]$AdatFajl,   # ideiglenes JSON {azonosito, jelszo}; elolvasás után töröljük
   [Parameter(Mandatory = $true)][string]$Restic       # a restic.exe útvonala
@@ -28,7 +28,9 @@ $buf = New-Object byte[] 32; $rng.GetBytes($buf)
 $enc = -join ($buf | ForEach-Object { $abc[$_ % $abc.Length] })
 $encSzep = ($enc -split '(.{4})' | Where-Object { $_ }) -join '-'
 
-$repo = "rest:https://" + [uri]::EscapeDataString($az) + ":" + [uri]::EscapeDataString($pw) + "@$Szerver/$az/"
+# Gépenként saját altároló (/<azonosító>/<gépnév>/): a Család és Iroda csomag több gépet enged.
+$gep = ($env:COMPUTERNAME).ToLower() -replace '[^a-z0-9._-]', '-'
+$repo = "rest:https://" + [uri]::EscapeDataString($az) + ":" + [uri]::EscapeDataString($pw) + "@$Szerver/$az/$gep/"
 
 $env:RESTIC_REPOSITORY = $repo
 $env:RESTIC_PASSWORD = $enc
@@ -46,7 +48,6 @@ if ($kod -ne 0) {
   exit 1
 }
 
-$gep = ($env:COMPUTERNAME).ToLower() -replace '[^a-z0-9._-]', '-'
 $utak = @([Environment]::GetFolderPath('MyDocuments'), [Environment]::GetFolderPath('Desktop'), [Environment]::GetFolderPath('MyPictures')) |
   Where-Object { $_ -and (Test-Path $_) } | Select-Object -Unique
 

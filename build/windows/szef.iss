@@ -127,7 +127,7 @@ begin
     0: exit;
     5: begin MarBeallitva := True; exit; end;
     2: Uzenet := 'A Széf-azonosító vagy a Széf-jelszó nem jó. Ellenőrizd, és próbáld újra.';
-    3: Uzenet := 'Ehhez a Széfhez már tartozik mentés (egy másik gépről vagy egy korábbi telepítésből). Ilyenkor a régi titkosítási jelszó kell hozzá — hívj, és segítünk: 06 20 549 4107.';
+    3: Uzenet := 'Erről a gépről már van mentés a Széfben (egy korábbi telepítésből). A folytatáshoz a régi helyreállítási lapon lévő titkosítási jelszó kell — hívj, és segítünk: 06 20 549 4107.';
     4: Uzenet := 'Nem sikerült elérni a szef.promnet.hu-t. Nézd meg, van-e internet, és próbáld újra.';
   else
     Uzenet := 'Váratlan hiba történt a beállításnál. A részletek: %TEMP%\promnet-szef-hiba.txt. Hívj, és segítünk: 06 20 549 4107.';
