@@ -40,7 +40,7 @@ export const RunCommandModal = ({ repo }: { repo: RepoProps }) => {
         }),
       );
     } catch (e: any) {
-      alerts.error("Command failed: " + e.message);
+      alerts.error("A parancs hibát adott: " + e.message);
     } finally {
       setRunning(false);
     }

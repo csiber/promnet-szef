@@ -142,7 +142,7 @@ export const SettingsModal = () => {
       setGeneratedToken(resp.token);
       await refreshConfig();
     } catch (e: any) {
-      alerts.error(formatErrorAlert(e, "Failed to generate pairing token"));
+      alerts.error(formatErrorAlert(e, "Nem sikerült párosító kódot létrehozni"));
     } finally {
       setGenerateLoading(false);
     }
@@ -156,9 +156,9 @@ export const SettingsModal = () => {
         newConfig.multihost.pairingTokens.splice(index, 1);
       }
       setConfig(await backrestService.setConfig(newConfig));
-      alerts.success("Pairing token removed.");
+      alerts.success("Párosító kód törölve.");
     } catch (e: any) {
-      alerts.error(formatErrorAlert(e, "Failed to remove pairing token"));
+      alerts.error(formatErrorAlert(e, "Nem sikerült törölni a párosító kódot"));
     }
   };
 
@@ -215,7 +215,7 @@ export const SettingsModal = () => {
 
       if (!newConfig.auth?.users && !newConfig.auth?.disabled) {
         throw new Error(
-          "At least one user must be configured or authentication must be disabled",
+          "Legalább egy felhasználó kell, vagy kapcsold ki a belépést",
         );
       }
 
@@ -274,7 +274,7 @@ export const SettingsModal = () => {
         <SectionCard
           icon={<FiSettings size={16} />}
           title="General"
-          description="Instance identity and display preferences."
+          description="A gép azonosítója és a megjelenés."
         >
           <Stack gap={4}>
             {users.length === 0 && !getField(["auth", "disabled"]) && (
@@ -315,7 +315,7 @@ export const SettingsModal = () => {
         <SectionCard
           icon={<FiLock size={16} />}
           title={m.settings_section_authentication()}
-          description="User accounts and access control."
+          description="Felhasználók és hozzáférés."
         >
           <Stack gap={4}>
             <ToggleField
@@ -323,7 +323,7 @@ export const SettingsModal = () => {
               checked={getField(["auth", "disabled"]) || false}
               onChange={(v) => updateField(["auth", "disabled"], v)}
               label={m.settings_auth_disable()}
-              hint="When disabled, no login is required to access Backrest."
+              hint="Kikapcsolva belépés nélkül megnyitható a program ezen a gépen."
             />
 
             <Field label={m.settings_auth_users()} required>
@@ -399,7 +399,7 @@ export const SettingsModal = () => {
           <SectionCard
             icon={<FiGlobe size={16} />}
             title={m.settings_section_multihost()}
-            description="Peer-to-peer synchronisation between Backrest instances."
+            description="Gépek közötti összekapcsolás."
           >
             <Stack gap={4}>
               <Text fontStyle="italic" fontSize="sm">
@@ -450,8 +450,8 @@ export const SettingsModal = () => {
 
           <SectionCard
             icon={<FiLock size={16} />}
-            title="Pairing Tokens"
-            description="Tokens that can be shared with other Backrest instances to simplify peering."
+            title="Párosító kódok"
+            description="Más gépekkel megosztható kódok az egyszerű összekapcsoláshoz."
           >
             <Stack gap={3} width="full">
               {(config.multihost?.pairingTokens || []).map((token, index) => (
@@ -470,7 +470,7 @@ export const SettingsModal = () => {
               {showGenerateForm && (
                 <Box p={4} borderWidth="1px" borderRadius="md">
                   <Stack gap={3}>
-                    <Field label="Label (optional)">
+                    <Field label="Megnevezés (nem kötelező)">
                       <Input
                         value={tokenLabel}
                         onChange={(e) => setTokenLabel(e.target.value)}
@@ -487,7 +487,7 @@ export const SettingsModal = () => {
                         {/* @ts-ignore */}
                         <SelectTrigger>
                           {/* @ts-ignore */}
-                          <SelectValueText placeholder="Select TTL" />
+                          <SelectValueText placeholder="Érvényesség" />
                         </SelectTrigger>
                         {/* @ts-ignore */}
                         <SelectContent zIndex={2000}>
@@ -499,7 +499,7 @@ export const SettingsModal = () => {
                         </SelectContent>
                       </SelectRoot>
                     </Field>
-                    <Field label="Max Uses" helperText="0 = unlimited">
+                    <Field label="Legfeljebb ennyiszer használható" helperText="0 = unlimited">
                       <Input
                         type="number"
                         value={tokenMaxUses}
@@ -649,7 +649,7 @@ const PairingTokenItem = ({
             size="xs"
             variant="ghost"
             onClick={onRemove}
-            aria-label="Remove token"
+            aria-label="Kód törlése"
           >
             <Minus />
           </IconButton>
@@ -662,7 +662,7 @@ const PairingTokenItem = ({
             size="sm"
             variant="outline"
             onClick={() => navigator.clipboard.writeText(fullTokenString)}
-            aria-label="Copy token"
+            aria-label="Kód másolása"
           >
             <Copy />
           </IconButton>
@@ -729,7 +729,7 @@ const KnownHostsList = ({ items, onUpdate, peerStates, config }: any) => {
       const instanceId = pairToken.substring(hashIdx + 1);
 
       if (!keyId || !secret || !instanceId) {
-        throw new Error("Token is missing required fields");
+        throw new Error("A kódból hiányoznak adatok");
       }
       if (!pairInstanceUrl) {
         throw new Error("Instance URL is required");
@@ -757,9 +757,9 @@ const KnownHostsList = ({ items, onUpdate, peerStates, config }: any) => {
       setPairToken("");
       setPairInstanceUrl("");
       setShowAddForm(false);
-      alerts.success("Server added to known hosts. Save settings to apply.");
+      alerts.success("A szerver bekerült az ismert gépek közé. Mentsd a beállításokat.");
     } catch (e: any) {
-      alerts.error(formatErrorAlert(e, "Failed to add known host"));
+      alerts.error(formatErrorAlert(e, "Nem sikerült felvenni az ismert gépet"));
     }
   };
 
@@ -784,7 +784,7 @@ const KnownHostsList = ({ items, onUpdate, peerStates, config }: any) => {
               Paste a pairing token from another Backrest server, or leave blank
               to configure manually.
             </Text>
-            <Field label="Pairing Token (optional)">
+            <Field label="Párosító kód (nem kötelező)">
               <Input
                 value={pairToken}
                 onChange={(e) => setPairToken(e.target.value)}
@@ -792,7 +792,7 @@ const KnownHostsList = ({ items, onUpdate, peerStates, config }: any) => {
                 width="full"
               />
             </Field>
-            <Field label="Instance URL" required>
+            <Field label="A gép címe" required>
               <Input
                 value={pairInstanceUrl}
                 onChange={(e) => setPairInstanceUrl(e.target.value)}
@@ -1115,7 +1115,7 @@ const PeerPermissionsTile = ({
               size="sm"
               variant="ghost"
               onClick={() => handleRemove(index)}
-              aria-label="Remove Permission"
+              aria-label="Jogosultság törlése"
             >
               <Minus size={14} />
             </IconButton>
@@ -1193,7 +1193,7 @@ const UserSettingsForm = () => {
         {/* @ts-ignore */}
         <SelectTrigger>
           {/* @ts-ignore */}
-          <SelectValueText placeholder="Select language" />
+          <SelectValueText placeholder="Válassz nyelvet" />
         </SelectTrigger>
         {/* @ts-ignore */}
         <SelectContent zIndex={2000}>

@@ -260,7 +260,7 @@ const SftpConfigSection = ({
       if (res.error) {
         setHostKeyWarning(res.error);
       }
-      alerts.success("Generated SSH keypair at " + res.keyPath);
+      alerts.success("SSH-kulcspár létrehozva: " + res.keyPath);
     } catch (e: any) {
       alerts.error(formatErrorAlert(e, "SFTP Setup Failed"));
     } finally {
@@ -341,7 +341,7 @@ const SftpConfigSection = ({
                 bg="yellow.subtle"
               >
                 <CText fontSize="sm" color="yellow.700">
-                  <strong>Host key scan failed:</strong> {hostKeyWarning}
+                  <strong>Nem sikerült beolvasni a gép kulcsát:</strong> {hostKeyWarning}
                 </CText>
               </Box>
             )}
@@ -351,7 +351,7 @@ const SftpConfigSection = ({
 
       <Field
         label="SFTP Identity File"
-        helperText="Optional: Path to an SSH identity file for SFTP authentication. This path must be accessible on the machine running backrest."
+        helperText="Nem kötelező: SSH-kulcsfájl az SFTP-belépéshez. A programot futtató gépről elérhetőnek kell lennie."
       >
         <Input
           data-testid="add-repo-sftp-identity"
@@ -363,7 +363,7 @@ const SftpConfigSection = ({
 
       <Field
         label="SFTP Port"
-        helperText="Optional: Specify a custom port for SFTP connection. Defaults to 22."
+        helperText="Nem kötelező: egyedi port az SFTP-kapcsolathoz (alapból 22)."
       >
         <NumberInputField
           data-testid="add-repo-sftp-port"
@@ -376,8 +376,8 @@ const SftpConfigSection = ({
       </Field>
 
       <Field
-        label="Known Hosts File"
-        helperText="Optional: Path to a known_hosts file for host key verification. Populated automatically by Setup Keys."
+        label="Ismert gépek fájlja (known_hosts)"
+        helperText="Nem kötelező: known_hosts fájl a gépkulcs ellenőrzéséhez. A kulcsbeállítás magától kitölti."
       >
         <Input
           data-testid="add-repo-sftp-known-hosts"
@@ -834,8 +834,8 @@ export const AddRepoModal = ({
           <TwoPaneSection id="identity">
             <SectionCard
               icon={<FiTag size={16} />}
-              title="Identity"
-              description="Display name, identifiers, and unlock behaviour."
+              title="Azonosítás"
+              description="Név, azonosító és a zárolás feloldása."
             >
               <Stack gap={4}>
                 <Field
@@ -880,7 +880,7 @@ export const AddRepoModal = ({
                   checked={getField(["shared"]) || false}
                   onChange={(v) => updateField(["shared"], v)}
                   label="Shared"
-                  hint="If using multihost management, enables sharing this repo's configuration to all authorized clients with read permission."
+                  hint="Több gép összekapcsolásakor ennek a tárolónak a beállítását megosztja az olvasási joggal rendelkező gépekkel."
                 />
                 {getField(["shared"]) && (
                   <CText fontSize="sm" color="orange.500">
@@ -895,8 +895,8 @@ export const AddRepoModal = ({
           <TwoPaneSection id="connection">
             <SectionCard
               icon={<FiLink size={16} />}
-              title="Connection"
-              description="Where the repo lives and how Backrest authenticates."
+              title="Kapcsolat"
+              description="Hol van a tároló, és hogyan lép be a program."
             >
               <Stack gap={4}>
                 <Field
@@ -1010,7 +1010,7 @@ export const AddRepoModal = ({
           <TwoPaneSection id="scheduling">
             <SectionCard
               icon={<FiClock size={16} />}
-              title="Prune Policy"
+              title="Takarítás"
               description={m.add_repo_modal_field_prune_policy_help()}
             >
               <Stack gap={4}>
@@ -1040,7 +1040,7 @@ export const AddRepoModal = ({
 
             <SectionCard
               icon={<FiClock size={16} />}
-              title="Check Policy"
+              title="Ellenőrzés"
               description={m.add_repo_modal_field_check_policy_help()}
             >
               <Stack gap={4}>
@@ -1106,7 +1106,7 @@ export const AddRepoModal = ({
             <SectionCard
               icon={<FiZap size={16} />}
               title="Hooks"
-              description="Run commands or send notifications on operation events."
+              description="Parancs vagy értesítés a műveletek egyes lépéseinél."
             >
               <Field
                 label={m.add_plan_modal_field_hooks()}
@@ -1124,8 +1124,8 @@ export const AddRepoModal = ({
           <TwoPaneSection id="advanced">
             <SectionCard
               icon={<FiSliders size={16} />}
-              title="Advanced"
-              description="Command priority, extra flags, and raw restic options."
+              title="Haladó"
+              description="Prioritás, kapcsolók és restic-beállítások."
             >
               <Stack gap={4} width="full">
                 {!isWindows && (

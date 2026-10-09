@@ -790,7 +790,7 @@ const SidebarContent = ({ onClose }: { onClose?: () => void }) => {
                             repos: [updatedRepo],
                           }),
                         );
-                        alerts.success("Remote repo updated");
+                        alerts.success("Távoli tároló frissítve");
                       }}
                     />,
                   );
@@ -810,7 +810,7 @@ const SidebarContent = ({ onClose }: { onClose?: () => void }) => {
                             plans: [updatedPlan],
                           }),
                         );
-                        alerts.success("Remote plan updated");
+                        alerts.success("Távoli terv frissítve");
                       }}
                     />,
                   );
@@ -1117,7 +1117,7 @@ export const AuthenticationBoundary = ({
   if (error && !config) {
     return (
       <EmptyState
-        title="Failed to load configuration"
+        title="Nem sikerült betölteni a beállításokat"
         description={error}
         icon={<FiAlertTriangle />}
       >

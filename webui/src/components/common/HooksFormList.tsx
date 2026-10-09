@@ -229,7 +229,7 @@ const HookItem = ({
             variant="ghost"
             colorPalette="red"
             onClick={onRemove}
-            aria-label="Remove hook"
+            aria-label="Művelet törlése"
             data-testid="hook-remove"
           >
             <FiTrash2 />
@@ -320,7 +320,7 @@ const hookTypes: {
       return (
         <Stack gap={2}>
           <Input
-            placeholder="Shoutrrr URL"
+            placeholder="Shoutrrr-cím"
             value={hook.actionShoutrrr?.shoutrrrUrl || ""}
             onChange={(e) => updateShoutrrr("shoutrrrUrl", e.target.value)}
             size="sm"
@@ -358,7 +358,7 @@ const hookTypes: {
       return (
         <Stack gap={2}>
           <Input
-            placeholder="Discord Webhook URL"
+            placeholder="Discord webhook-cím"
             value={hook.actionDiscord?.webhookUrl || ""}
             onChange={(e) => updateDiscord("webhookUrl", e.target.value)}
             size="sm"
@@ -400,19 +400,19 @@ const hookTypes: {
       return (
         <Stack gap={2}>
           <Input
-            placeholder="Gotify Base URL"
+            placeholder="Gotify-cím"
             value={hook.actionGotify?.baseUrl || ""}
             onChange={(e) => updateGotify("baseUrl", e.target.value)}
             size="sm"
           />
           <Input
-            placeholder="Gotify Token"
+            placeholder="Gotify-token"
             value={hook.actionGotify?.token || ""}
             onChange={(e) => updateGotify("token", e.target.value)}
             size="sm"
           />
           <Input
-            placeholder="Title Template"
+            placeholder="Cím sablonja"
             value={hook.actionGotify?.titleTemplate || ""}
             onChange={(e) => updateGotify("titleTemplate", e.target.value)}
             size="sm"
@@ -440,7 +440,7 @@ const hookTypes: {
             onChange={(val) =>
               updateGotify("priority", parseInt(val as string))
             }
-            placeholder="Priority"
+            placeholder="Prioritás"
             size="sm"
           />
         </Stack>
@@ -467,7 +467,7 @@ const hookTypes: {
       return (
         <Stack gap={2}>
           <Input
-            placeholder="Slack Webhook URL"
+            placeholder="Slack webhook-cím"
             value={hook.actionSlack?.webhookUrl || ""}
             onChange={(e) => updateSlack("webhookUrl", e.target.value)}
             size="sm"
@@ -505,7 +505,7 @@ const hookTypes: {
       return (
         <Stack gap={2}>
           <Input
-            placeholder="Ping URL"
+            placeholder="Ping-cím"
             value={hook.actionHealthchecks?.webhookUrl || ""}
             onChange={(e) => updateHealthchecks("webhookUrl", e.target.value)}
             size="sm"
@@ -544,7 +544,7 @@ const hookTypes: {
       return (
         <Stack gap={2}>
           <Input
-            placeholder="Bot Token"
+            placeholder="Bot-token"
             value={hook.actionTelegram?.botToken || ""}
             onChange={(e) => updateTelegram("botToken", e.target.value)}
             size="sm"
@@ -590,7 +590,7 @@ const HookBuilder = ({
   onChange: (h: HookFields) => void;
 }) => {
   if (!hook) {
-    return <Text>Unknown hook type</Text>;
+    return <Text>Ismeretlen művelettípus</Text>;
   }
 
   for (const hookType of hookTypes) {
@@ -599,7 +599,7 @@ const HookBuilder = ({
     }
   }
 
-  return <Text>Unknown hook type</Text>;
+  return <Text>Ismeretlen művelettípus</Text>;
 };
 
 const ItemOnErrorSelector = ({

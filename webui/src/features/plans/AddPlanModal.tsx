@@ -307,7 +307,7 @@ export const AddPlanModal = ({
         <SectionCard
           icon={<FiFileText size={16} />}
           title={m.op_row_backup_details()}
-          description="Plan name and target repository."
+          description="A terv neve és a cél tároló."
         >
           <Stack gap={4}>
             <Field
@@ -409,7 +409,7 @@ export const AddPlanModal = ({
         <SectionCard
           icon={<FiFolder size={16} />}
           title={m.settings_peer_permission_scopes()}
-          description="Directories and exclusion patterns."
+          description="Mentendő mappák és kihagyások."
         >
           <Stack gap={4}>
             <DynamicList
@@ -471,7 +471,7 @@ export const AddPlanModal = ({
         <SectionCard
           icon={<FiClock size={16} />}
           title={m.add_plan_modal_field_schedule()}
-          description="When backups run automatically."
+          description="Mikor fusson magától a mentés."
         >
           <ScheduleFormItem
             value={getField(["schedule"])}
@@ -486,7 +486,7 @@ export const AddPlanModal = ({
         <SectionCard
           icon={<FiArchive size={16} />}
           title={m.add_plan_modal_retention_policy_label()}
-          description="How long to keep snapshots before forgetting them."
+          description="Meddig maradjanak meg a régi mentések."
         >
           {repoHasScheduledForget ? (
             <CText color="fg.muted" fontStyle="italic">
@@ -507,7 +507,7 @@ export const AddPlanModal = ({
         <SectionCard
           icon={<FiSliders size={16} />}
           title={m.add_plan_modal_advanced_label()}
-          description="Extra flags and notification hooks."
+          description="Kapcsolók és értesítések."
         >
           <Stack gap={4}>
             <DynamicList

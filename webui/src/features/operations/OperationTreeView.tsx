@@ -172,7 +172,7 @@ export const OperationTreeView = ({
             <LuInfo />
           </EmptyState.Indicator>
           <VStack textAlign="center">
-            <EmptyState.Title>No operations found</EmptyState.Title>
+            <EmptyState.Title>Nincs művelet</EmptyState.Title>
             <EmptyState.Description>
               There are no operations to display.
             </EmptyState.Description>
@@ -554,7 +554,7 @@ const BackupView = ({ backup }: { backup?: FlowDisplayInfo }) => {
   if (!backup) {
     return (
       <EmptyState.Root>
-        <EmptyState.Title>Backup not found.</EmptyState.Title>
+        <EmptyState.Title>A mentés nem található.</EmptyState.Title>
       </EmptyState.Root>
     );
   } else {
@@ -567,9 +567,9 @@ const BackupView = ({ backup }: { backup?: FlowDisplayInfo }) => {
             snapshotId: backup.snapshotID!,
           }),
         );
-        alerts.success("Snapshot forget scheduled.");
+        alerts.success("A mentés törlése ütemezve.");
       } catch (e: any) {
-        alerts.error("Failed to forget snapshot: " + e);
+        alerts.error("Nem sikerült törölni a mentést: " + e);
       }
     };
 

@@ -222,7 +222,7 @@ export const SnapshotBrowser = ({
         });
       });
     } catch (e: any) {
-      alerts.error("Failed to load snapshot files: " + e.message);
+      alerts.error("Nem sikerült betölteni a mentés fájljait: " + e.message);
     } finally {
       setLoadingKeys((prev) => {
         const next = new Set(prev);
@@ -328,7 +328,7 @@ const FileNode = ({
         window.open(resp.value, "_blank");
       })
       .catch((e) => {
-        alerts.error("Failed to fetch download URL: " + e.message);
+        alerts.error("Nem sikerült a letöltési link: " + e.message);
       });
   };
 
@@ -400,7 +400,7 @@ const FileNode = ({
             >
               <FiRefreshCw />
               {/* @ts-ignore */}
-              <MenuItemText>Restore to path</MenuItemText>
+              <MenuItemText>Visszaállítás ide</MenuItemText>
             </MenuItem>
             {snapshotOpId ? (
               // @ts-ignore
@@ -470,10 +470,10 @@ const RestoreModal = ({
           target,
         }),
       );
-      alerts.success("Restore started successfully.");
+      alerts.success("A visszaállítás elindult.");
       showModal(null);
     } catch (e: any) {
-      alerts.error("Failed to restore: " + e.message);
+      alerts.error("Nem sikerült a visszaállítás: " + e.message);
     }
   };
 
@@ -507,9 +507,9 @@ const RestoreModal = ({
           folder.
         </Text>
 
-        <Field label="Restore to path" errorText={error}>
+        <Field label="Visszaállítás ide" errorText={error}>
           <URIAutocomplete
-            placeholder="Restoring to Downloads"
+            placeholder="Visszaállítás a Letöltések mappába"
             value={target}
             onChange={(val: string) => setTarget(val || "")}
           />

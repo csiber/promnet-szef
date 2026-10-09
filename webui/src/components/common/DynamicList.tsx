@@ -135,7 +135,7 @@ const FlagAutocomplete = ({
         <ComboboxInput placeholder={placeholder} width="full" {...inputProps} />
       </ComboboxControl>
       <ComboboxContent zIndex={2000}>
-        <ComboboxEmpty>No flags found</ComboboxEmpty>
+        <ComboboxEmpty>Nincs kapcsoló</ComboboxEmpty>
         {collection.items.map((item) => (
           <ComboboxItem key={item.value} item={item}>
             {item.label}

@@ -59,7 +59,7 @@ export const OperationListView = ({
       logState,
       req,
       (e) => {
-        alerts.error("Failed to fetch operations: " + e.message);
+        alerts.error("Nem sikerült betölteni a műveleteket: " + e.message);
       },
       () => {
         setLoading(false);

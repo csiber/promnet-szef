@@ -53,7 +53,7 @@ export const LogView = ({ logref }: { logref: string }) => {
           e.name !== "AbortError" &&
           !e.message?.includes("signal is aborted without reason")
         ) {
-          setError(e.message || "Failed to fetch logs");
+          setError(e.message || "Nem sikerült betölteni a naplót");
         }
       } finally {
         setLoading(false);

@@ -30,7 +30,7 @@ export const PaginationPrevTrigger = React.forwardRef<
   return (
     // @ts-ignore
     <ChakraPagination.PrevTrigger {...props} asChild ref={ref}>
-      <IconButton variant="ghost" aria-label="Previous Page" size="sm">
+      <IconButton variant="ghost" aria-label="Előző oldal" size="sm">
         <FiChevronLeft />
       </IconButton>
     </ChakraPagination.PrevTrigger>
@@ -44,7 +44,7 @@ export const PaginationNextTrigger = React.forwardRef<
   return (
     // @ts-ignore
     <ChakraPagination.NextTrigger {...props} asChild ref={ref}>
-      <IconButton variant="ghost" aria-label="Next Page" size="sm">
+      <IconButton variant="ghost" aria-label="Következő oldal" size="sm">
         <FiChevronRight />
       </IconButton>
     </ChakraPagination.NextTrigger>
