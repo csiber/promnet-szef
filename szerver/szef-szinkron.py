@@ -3,13 +3,17 @@
   szef-szinkron lista     (percenként) a promnet.hu-ról lekéri az aktív fiókokat → /etc/szef/htpasswd (atomikusan, csak ha változott) + HUP;
                           a véglegesen törlendő azonosítókat a /srv/szef/.torlendo fájlba írja (a Proxmox-hoszt törli az adatukat).
   szef-szinkron jelentes  (naponta) azonosítónként foglalt hely, gépek (altárolók) száma, utolsó írás → promnet.hu; a már törölteket is jelenti.
-A kulcs: /etc/szef/promnet-kulcs (a promnet.hu-n csak a SHA-256 lenyomata van, service_keys / szef-szerver)."""
+A kulcs: /etc/szef/promnet-kulcs (a promnet.hu-n csak a SHA-256 lenyomata van, service_keys / szef-szerver).
+Belső (saját, nem fizetős) fiókok: /etc/szef/htpasswd.belso, csak `belso-…` nevek — ezeket a szinkron mindig megtartja,
+a jelentés és a törlés nem nyúl hozzájuk (pl. belso-aika: az Aika-infrastruktúra mentése, 2026-10-10)."""
 import json, os, re, subprocess, sys, time, urllib.request
 
 API = 'https://promnet.hu/api/internal/szef-szerver'
 HTPASSWD = '/etc/szef/htpasswd'
 ROOT = '/srv/szef'
 AZ_RE = re.compile(r'^sz-[a-z0-9]{6}$')
+BELSO = '/etc/szef/htpasswd.belso'
+BELSO_RE = re.compile(r'^belso-[a-z0-9-]{2,30}:\{SHA\}[A-Za-z0-9+/=]{28}$')
 
 def kulcs():
     with open('/etc/szef/promnet-kulcs') as f: return f.read().strip()
@@ -23,7 +27,8 @@ def lista():
     d = hivas('GET')
     if not d.get('ok'): raise SystemExit('a promnet.hu hibát adott: %s' % d)
     sorok = sorted(a['htpasswd'] for a in d['accounts'] if AZ_RE.match(a['azonosito']) and a['htpasswd'].startswith(a['azonosito'] + ':{SHA}'))
-    uj = '\n'.join(sorok) + ('\n' if sorok else '')
+    belso = sorted(l.strip() for l in (open(BELSO).read().splitlines() if os.path.exists(BELSO) else []) if BELSO_RE.match(l.strip()))
+    uj = '\n'.join(sorok + belso) + ('\n' if sorok or belso else '')
     regi = open(HTPASSWD).read() if os.path.exists(HTPASSWD) else ''
     # Biztonsági fék: ha egy csapásra eltűnne minden belépés, inkább nem írjuk felül (valószínűleg hiba a túloldalon).
     if not sorok and regi.count('\n') >= 3:
@@ -34,7 +39,7 @@ def lista():
         os.chmod(tmp, 0o640); subprocess.run(['chown', 'root:szef', tmp], check=True)
         os.replace(tmp, HTPASSWD)
         subprocess.run(['systemctl', 'kill', '-s', 'HUP', 'promnet-szef'], check=False)
-        print('htpasswd frissítve: %d belépés' % len(sorok))
+        print('htpasswd frissítve: %d belépés (+%d belső)' % (len(sorok), len(belso)))
     torl = sorted(a for a in d.get('torlendo', []) if AZ_RE.match(a))
     t = '\n'.join(torl) + ('\n' if torl else '')
     p = os.path.join(ROOT, '.torlendo')
