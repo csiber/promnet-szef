@@ -48,6 +48,10 @@ if ($kod -ne 0) {
   exit 1
 }
 
+# A jelzés sablonja (Go-sablon; a Backrest tölti ki eseménykor).
+$jelzes = '{"az":"AZ","pw":"PW","gep":"GEP","e":"{{ .EventName .Event }}","err":{{ .JsonMarshal .Error }},"d":"{{ .FormatDuration .Duration }}"}'
+$jelzes = $jelzes.Replace('"AZ"', '"' + $az + '"').Replace('"PW"', '"' + $pw + '"').Replace('"GEP"', '"' + $gep + '"')
+
 $utak = @([Environment]::GetFolderPath('MyDocuments'), [Environment]::GetFolderPath('Desktop'), [Environment]::GetFolderPath('MyPictures')) |
   Where-Object { $_ -and (Test-Path $_) } | Select-Object -Unique
 
@@ -63,7 +67,14 @@ $cfg = [ordered]@{
       autoUnlock     = $true
       autoInitialize = $true
       prunePolicy    = @{ schedule = @{ maxFrequencyDays = 30; clock = 'CLOCK_LAST_RUN_TIME' }; maxUnusedPercent = 10 }
-      checkPolicy    = @{ schedule = @{ maxFrequencyDays = 30; clock = 'CLOCK_LAST_RUN_TIME' }; structureOnly = $true }
+      # Havi ellenőrzés: a szerkezet mellett az adat 5%-át ténylegesen visszaolvassa és visszafejti (itt, a gépen, a kulccsal).
+      checkPolicy    = @{ schedule = @{ maxFrequencyDays = 30; clock = 'CLOCK_LAST_RUN_TIME' }; readDataSubsetPercent = 5 }
+      # Jelzés a promnet.hu-nak (Széf Plusz, 2026-10-10): a havi ellenőrzés eredménye és a sikertelen mentés.
+      # Csak a Széf-BELÉPÉSI jelszót küldi azonosításra (a szerveren csak a lenyomata van) — a titkosítási jelszót SOHA.
+      hooks          = @(@{
+          conditions         = @('CONDITION_CHECK_SUCCESS', 'CONDITION_CHECK_ERROR', 'CONDITION_SNAPSHOT_ERROR')
+          actionHealthchecks = @{ webhookUrl = 'https://promnet.hu/api/szef/esemeny'; template = $jelzes }
+        })
     })
   plans    = @(@{
       id        = 'sajat-mappak'

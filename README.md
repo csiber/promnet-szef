@@ -7,6 +7,7 @@ Havidíjas, titkosított gépmentés a PromNET szervizügyfeleinek (szef.promnet
 - Csendes telepítés a szervizben: `PromNET-Szef-telepito.exe /VERYSILENT /AZONOSITO=<azonosító> /JELSZO=<jelszó>`
 - Fordítás: Windows-exe a CT120-ban (mingw), telepítő a gamer PC-n (C:\SzefBuild, Inno Setup 6.7.3).
 - TODO: beégetett angol szövegek a haladó beállításoknál; kódaláírás; automatikus kiadás.
+- 2026-10-10: Széf Plusz — a telepítő a havi ellenőrzést 5% adat-visszaolvasással állítja be, és egy healthchecks-hookkal jelzi a promnet.hu-nak (`/api/szef/esemeny`) a havi ellenőrzés eredményét és a sikertelen mentést (azonosítás: Széf-belépési jelszó; a titkosítási jelszó SOHA). Fork-módosítás: `internal/hook/types/healthchecks.go` JSON-sablonnál `application/json`-t küld.
 - 2026-10-10: a szerver belső (nem fizetős, `belso-…`) fiókokat is kezel — az Aika-infrastruktúra napi mentése így a saját Széfre megy (szerver/README.md).
 
 ---

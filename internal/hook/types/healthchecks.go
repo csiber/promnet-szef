@@ -7,6 +7,7 @@ import (
 	"net/url"
 	"path"
 	"reflect"
+	"strings"
 
 	v1 "github.com/garethgeorge/backrest/gen/go/v1"
 	"github.com/garethgeorge/backrest/internal/hook/hookutil"
@@ -47,7 +48,13 @@ func (healthchecksHandler) Execute(ctx context.Context, cmd *v1.Hook, vars inter
 
 	pingUrl := u.String()
 
-	body, err := hookutil.PostRequest(pingUrl, "text/plain", bytes.NewBufferString(payload))
+	// PromNET Széf (2026-10-10): ha a sablon JSON-t ad (a mi jelzésünk a promnet.hu-nak), JSON-ként küldjük —
+	// a promnet.hu (Astro checkOrigin) az Origin nélküli text/plain POST-ot elutasítja.
+	contentType := "text/plain"
+	if t := strings.TrimSpace(payload); strings.HasPrefix(t, "{") && strings.HasSuffix(t, "}") {
+		contentType = "application/json"
+	}
+	body, err := hookutil.PostRequest(pingUrl, contentType, bytes.NewBufferString(payload))
 	if err != nil {
 		return fmt.Errorf("sending healthchecks message to %q: %w", pingUrl, err)
 	}
