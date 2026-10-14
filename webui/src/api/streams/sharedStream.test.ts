@@ -9,6 +9,9 @@ import {
 } from "vitest";
 import { createSharedStream, type StreamSubscriber } from "./sharedStream";
 
+// A saját CI-futtatón (CT136) terhelés alatt az alap 1 s kevés lehet (PromNET, 2026-10-14)
+const waitFor = <T>(fn: () => T) => vi.waitFor(fn, { timeout: 5000 });
+
 // ---------------------------------------------------------------------------
 // Mocks: a shared in-process registry lets multiple SharedStream instances in a
 // single test stand in for multiple browser tabs of the same origin.
@@ -180,7 +183,7 @@ describe("sharedStream — shared (leader/follower) mode", () => {
     const disposeB = streamB.subscribe(subB);
 
     // Follower B receives the leader's message over the bus.
-    await vi.waitFor(() =>
+    await waitFor(() =>
       expect(subB.onMessage).toHaveBeenCalledWith({ id: 1 }),
     );
     // Leader A delivered it locally too.
@@ -225,13 +228,13 @@ describe("sharedStream — shared (leader/follower) mode", () => {
     const subB = spySubscriber();
     streamB.subscribe(subB);
 
-    await vi.waitFor(() => expect(connectA).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(connectA).toHaveBeenCalledTimes(1));
     expect(connectB).not.toHaveBeenCalled();
 
     // Leader leaves — B should acquire the lock and open its own upstream.
     disposeA();
-    await vi.waitFor(() => expect(connectB).toHaveBeenCalledTimes(1));
-    await vi.waitFor(() =>
+    await waitFor(() => expect(connectB).toHaveBeenCalledTimes(1));
+    await waitFor(() =>
       expect(subB.onMessage).toHaveBeenCalledWith({ id: 2 }),
     );
   });
@@ -258,7 +261,7 @@ describe("sharedStream — shared (leader/follower) mode", () => {
 
     streamA.subscribe(spySubscriber());
     // Wait until A is the leader (its upstream opened) before B joins.
-    await vi.waitFor(() => expect(connectA).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(connectA).toHaveBeenCalledTimes(1));
 
     const subB = spySubscriber();
     streamB.subscribe(subB);
@@ -300,7 +303,7 @@ describe("sharedStream — fallback mode (no Web Locks)", () => {
     const sub = spySubscriber();
     const dispose = stream.subscribe(sub);
 
-    await vi.waitFor(() =>
+    await waitFor(() =>
       expect(sub.onMessage).toHaveBeenCalledWith({ id: 2 }),
     );
     expect(sub.onMessage).toHaveBeenCalledWith({ id: 1 });
@@ -334,7 +337,7 @@ describe("sharedStream — fallback mode (no Web Locks)", () => {
 
     const sub = spySubscriber();
     const dispose = stream.subscribe(sub);
-    await vi.waitFor(() =>
+    await waitFor(() =>
       expect(sub.onMessage).toHaveBeenCalledWith({ id: 1 }),
     );
     const before = sub.onConnectOrResync.mock.calls.length;
@@ -346,7 +349,7 @@ describe("sharedStream — fallback mode (no Web Locks)", () => {
     hidden = false;
     document.dispatchEvent(new Event("visibilitychange"));
 
-    await vi.waitFor(() =>
+    await waitFor(() =>
       expect(sub.onConnectOrResync.mock.calls.length).toBe(before + 1),
     );
 
