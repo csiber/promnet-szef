@@ -14,7 +14,7 @@ permissions:
 
 jobs:
   update-restic-version:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, promnet-ci]   # saját futtató, CT136 (2026-10-14: elfogyott a GitHub ingyen perce)
     steps:
       - uses: actions/checkout@v3
 

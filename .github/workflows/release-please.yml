@@ -11,7 +11,7 @@ name: Release Please
 
 jobs:
   release-please:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, promnet-ci]   # saját futtató, CT136 (2026-10-14: elfogyott a GitHub ingyen perce)
     steps:
       - uses: google-github-actions/release-please-action@v4
         with:

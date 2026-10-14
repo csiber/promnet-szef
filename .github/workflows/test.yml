@@ -16,7 +16,7 @@ on:
 
 jobs:
   test-nix:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, promnet-ci]   # saját futtató, CT136 (2026-10-14: elfogyott a GitHub ingyen perce)
     steps:
       - uses: actions/checkout@v4
 
@@ -41,7 +41,7 @@ jobs:
         run: PATH=$(pwd):$PATH gotestsum ./... -- --race
 
   test-webui:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, promnet-ci]   # saját futtató, CT136 (2026-10-14: elfogyott a GitHub ingyen perce)
     env:
       TZ: UTC
     steps:
@@ -70,7 +70,7 @@ jobs:
         run: cd webui && pnpm run check
 
   test-e2e-web:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, promnet-ci]   # saját futtató, CT136 (2026-10-14: elfogyott a GitHub ingyen perce)
     env:
       # Not RCLONE_*: rclone reads RCLONE_VERSION as its --version flag.
       E2E_RCLONE_VERSION: v1.69.1

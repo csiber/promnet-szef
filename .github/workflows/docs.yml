@@ -16,7 +16,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, promnet-ci]   # saját futtató, CT136 (2026-10-14: elfogyott a GitHub ingyen perce)
 
     steps:
       - name: Checkout repository
@@ -62,7 +62,7 @@ jobs:
       pages: write
       id-token: write
       actions: read
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, promnet-ci]   # saját futtató, CT136 (2026-10-14: elfogyott a GitHub ingyen perce)
     needs: build
     steps:
       - name: Deploy to GitHub Pages
